@@ -1,0 +1,28 @@
+{
+  "name": "whatsapp-clone",
+  "version": "1.0.0",
+  "description": "Whatsapp clone build using Nixix, TailwindCSS and maybe Firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build",
+    "start": "vite",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "nixix",
+    "speed",
+    "signals",
+    "typescript",
+    "whatsapp"
+  ],
+  "author": "Charles Ikechukwu",
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^10.4.14",
+    "nixix": "^1.4.14",
+    "patch": "^0.0.1",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2"
+  }
+}
