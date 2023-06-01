@@ -36,6 +36,7 @@
     ],
     "checkJs": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
+    "moduleResolution": "node",
+  },
+  "include": ["**/*"]
 }
