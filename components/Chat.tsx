@@ -3,7 +3,7 @@ import { UserAvatar } from '@assets/icons';
 import auth from 'apis/auth';
 import getRecEmail from 'utils/getRecEmail';
 import { effect, callRef } from 'nixix';
-import { query, where } from 'firebase/firestore';
+import { getDocs, query, where } from 'firebase/firestore';
 import { usersDBCollection } from 'apis/db';
 import { setChatScreen } from 'utils/reactives';
 
@@ -40,7 +40,13 @@ export function addUserAvater(
   });
 }
 
-export default function Chat({ users, id }: { users: [string, string], id: string }) {
+export default function Chat({
+  users,
+  id,
+}: {
+  users: [string, string];
+  id: string;
+}) {
   const [user, loading] = callAuthState(auth);
   const emailContainer = callRef<HTMLSpanElement>();
   const userAvatarContainer = callRef<HTMLSpanElement>();
@@ -54,16 +60,25 @@ export default function Chat({ users, id }: { users: [string, string], id: strin
       addUserAvater(userAvatarContainer, { users, user });
     }
   });
+
+  async function enterChat() {
+    history.pushState({}, null, `/chats/${id}`);
+    const QUERY = query(usersDBCollection, where('email', '==', getRecEmail(users, user)))
+    
+    const docsFromQuery = await getDocs(QUERY);
+    const photoUrl = docsFromQuery?.docs?.[0]?.data()?.photoUrl;
+
+    setChatScreen({
+      display: 'flex',
+      flexGrow: '0',
+      recEmail: getRecEmail(users, user),
+      photoUrl: photoUrl ? photoUrl : null
+    });
+  }
   return (
     <section
       className="flex w-full items-center cursor-pointer break-words p-[15px] hover:bg-gray-200"
-      on:click={() => {
-        history.pushState({}, null, `/chats/${id}`)
-        setChatScreen({
-          display: 'flex',
-          flexGrow: '0',
-        });
-      }}
+      on:click={enterChat}
     >
       <span
         bind:ref={userAvatarContainer}

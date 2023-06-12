@@ -14,4 +14,15 @@ declare global {
   interface UserProp {
     user: Nixix.StoreObject<User>
   }
+
+  interface MessageProp {
+
+  }
+
+  interface ChatScreenStore {
+    display: 'none' | 'flex',
+    flexGrow: '1' | '0',
+    recEmail: string,
+    photoUrl: string | null
+  }
 }

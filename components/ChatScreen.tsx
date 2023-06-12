@@ -9,10 +9,13 @@ import {
   MoreVertIcon,
   UserAvatar,
 } from '@assets/icons';
+import { callCollection } from 'nixix-firebase-hooks';
+import { orderBy, query } from 'firebase/firestore';
 
 // add props to it.
 export default function ChatScreen() {
-  const userAvatarContainer = callRef<HTMLSpanElement>();
+  const messagesContainer = callRef<HTMLElement>();
+  // const [messagesSnapshot] = callCollection(query(, orderBy('timestamp', 'asc')))
 
   return (
     <section
@@ -25,12 +28,15 @@ export default function ChatScreen() {
     >
       <header className="bg-white w-full h-[80px] flex items-center shadow-sm p-[15px]">
         <span
-          on:click={() =>
+          on:click={() => {
+            history.pushState({}, null, `/chats`);
             setChatScreen({
               display: 'none',
               flexGrow: '1',
-            })
-          }
+              recEmail: 'Rec Email',
+              photoUrl: null
+            });
+          }}
         >
           <ChevronLeftIcon
             size={35}
@@ -39,13 +45,12 @@ export default function ChatScreen() {
           />
         </span>
         {/* Recipient's user avatar */}
-        <span className="mr-[15px] w-[35px] h-[35px] rounded-full  cursor-pointer">
-          <UserAvatar size={35} className="fill-blue-500 m-0 cursor-pointer" />
+        <span className="mr-[15px] w-[35px] h-[35px] rounded-full  cursor-pointer" bind:ref={refs.chatScreenUserAvatar}>
         </span>
 
         {/* Header info */}
         <div>
-          <h1 className="font-bold">Rec Email</h1>
+          <h1 className="font-bold" bind:ref={refs.recEmail}>{chatScreen.recEmail}</h1>
           <p>Last seen...</p>
         </div>
 
@@ -64,7 +69,8 @@ export default function ChatScreen() {
       </header>
 
       {/* message container */}
-      <section className="flex-grow bg-whatsapp rounded-bl-lg"></section>
+      <section className="bg-whatsapp rounded-bl-lg messages-container flex-grow overflow-y-scroll no-scroll"
+      bind:ref={messagesContainer}></section>
 
       {/* input field */}
       <section className="w-full h-[20%] flex items-center  justify-between p-[15px] sm:h-[80px] bg-white">
