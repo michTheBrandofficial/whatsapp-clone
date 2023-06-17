@@ -1,5 +1,5 @@
 import { type DataType } from 'csstype';
-import { type CSSProperties } from 'nixix-types';
+import { type CSSProperties } from 'nixix';
 
 interface IconOptions {
   stroke?: DataType.NamedColor;

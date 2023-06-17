@@ -3,32 +3,31 @@ import { callCollection } from 'nixix-firebase-hooks';
 import { userDBChatCollection } from 'apis/db';
 import { signOut } from 'apis/auth';
 import { createChat } from 'utils/chats';
-import { effect, callRef } from 'nixix';
+import { effect, callStore } from 'nixix/primitives';
+import { For } from 'nixix/hoc'
 import Chat from './Chat';
 import refs from 'utils/refs';
 import { chatScreen } from 'utils/reactives';
 import './Loader.css';
 
 export default function Sidebar({ user }: UserProp) {
-  const chatContainer = callRef<HTMLElement>();
-
+  
+  const [chatsArray, setChatsArray] = callStore([] as AllChats[]);
   const [chatSnapShots, loading] = callCollection(userDBChatCollection);
 
+  // Refactored the Chats array.
   effect(() => {
     if (loading.value) {
-      const allChats: AllChats[] = chatSnapShots.$$__value.docs.map((chat) => {
-        return {id: chat.id, data: chat.data() as UsersChatsType};
+      setChatsArray(() => {
+        const allChats: AllChats[] = chatSnapShots.$$__value.docs.map((chat) => {
+          return {id: chat.id, data: chat.data() as UsersChatsType};
+        });
+  
+        return allChats?.filter((chat) => {
+          return chat.data.users.includes(user.$$__value.email);
+        });
+
       });
-
-      const userChats = allChats?.filter((chat) => {
-        return chat.data.users.includes(user.$$__value.email);
-      });
-
-      const userChatsArray = userChats?.map((chat) => {
-        return <Chat users={chat.data.users} id={chat.id} />;
-      }) || [''];
-
-      chatContainer.current.replaceChildren(...userChatsArray);
     }
   });
 
@@ -80,10 +79,17 @@ export default function Sidebar({ user }: UserProp) {
       </header>
 
       {/* List of chats */}
-      <section
+      <For parent={
+        <section
         className="chat-container flex-grow overflow-y-scroll no-scroll"
-        bind:ref={chatContainer}
       ></section>
+      } each={chatsArray} fallback={''}>
+        {
+          (chat: AllChats) => {
+            return <Chat users={chat.data.users} id={chat.id} />;
+          }
+        }
+      </For>
     </section>
   );
 }

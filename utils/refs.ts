@@ -1,4 +1,4 @@
-import { callRef } from "nixix";
+import { callRef } from "nixix/primitives";
 
 export default {
   userAvatar: callRef<HTMLSpanElement>(),

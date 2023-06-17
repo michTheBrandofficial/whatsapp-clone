@@ -1,4 +1,4 @@
-import { effect } from 'nixix';
+import { effect } from 'nixix/primitives';
 import { Route, Routes, Router } from 'nixix/router';
 import {
   doc,
@@ -55,13 +55,12 @@ function App() {
     }
   });
 
+  function checkUser() {
+    return userLoggedIn.value ? '/chats' : '/login';
+  }
   return (
-    <Routes
-    callback={() => {
-      return userLoggedIn.value ? '/chats' : '/login';
-    }}
-    >
-      <Route element={<Whatsapp />} path="/" />
+    <Routes callback={checkUser}>
+      <Route element={<Whatsapp />} />
       <Route element={<Chats user={user} />} path="/chats" />
       <Route element={<Login />} path="/login" />
     </Routes>

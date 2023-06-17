@@ -2,13 +2,13 @@ import { callAuthState, callCollection } from 'nixix-firebase-hooks';
 import { UserAvatar } from '@assets/icons';
 import auth from 'apis/auth';
 import getRecEmail from 'utils/getRecEmail';
-import { effect, callRef } from 'nixix';
+import { effect, callRef, type MutableRefObject } from 'nixix/primitives';
 import { getDocs, query, where } from 'firebase/firestore';
 import { usersDBCollection } from 'apis/db';
-import { setChatScreen } from 'utils/reactives';
+import { getMessagesSnapShot, mesListener, setChatScreen, setMesListener, setUserMessage, userMessage } from 'utils/reactives';
 
 export function addUserAvater(
-  parent: Nixix.MutableRefObject<HTMLSpanElement>,
+  parent: MutableRefObject<HTMLSpanElement>,
   { users, user }
 ) {
   const [recipientSnapShot, loading, listener] = callCollection(
@@ -65,9 +65,16 @@ export default function Chat({
     history.pushState({}, null, `/chats/${id}`);
     const QUERY = query(usersDBCollection, where('email', '==', getRecEmail(users, user)))
     
+    setMesListener(false)
     const docsFromQuery = await getDocs(QUERY);
     const photoUrl = docsFromQuery?.docs?.[0]?.data()?.photoUrl;
 
+    getMessagesSnapShot(id);
+    setUserMessage(() => {
+      return {user: user.$$__value.email, message: {
+        messageBody: ''
+      }, timestamp: 0}
+    })
     setChatScreen({
       display: 'flex',
       flexGrow: '0',

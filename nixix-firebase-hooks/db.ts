@@ -5,17 +5,16 @@ import {
   QueryDocumentSnapshot,
   type Unsubscribe,
 } from 'firebase/firestore';
-import { callSignal } from 'nixix';
-import { callStore } from 'nixix';
+import { callSignal, callStore, type StoreObject, type SignalObject } from 'nixix/primitives';
 
 
 export function callCollection<T = DocumentData>(
   query: Query<T>
   ): [
-    Nixix.StoreObject<{
+    StoreObject<{
       docs: QueryDocumentSnapshot[] | null;
     }>,
-    Nixix.SignalObject<boolean>,
+    SignalObject<boolean>,
     Unsubscribe
   ] {
   const [loadingDocs, setLoadingDocs] = callSignal(false);
@@ -29,7 +28,7 @@ export function callCollection<T = DocumentData>(
   });
 
   return [
-    querySnapshot as Nixix.StoreObject<{
+    querySnapshot as StoreObject<{
       docs: QueryDocumentSnapshot[] | null;
     }>,
     loadingDocs,

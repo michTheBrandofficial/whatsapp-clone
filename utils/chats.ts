@@ -2,8 +2,9 @@ import { createChatDB } from "apis/db";
 import { validate } from "email-validator";
 import { type User } from "firebase/auth";
 import { type QueryDocumentSnapshot, type DocumentData } from "firebase/firestore";
+import { type StoreObject } from "nixix/primitives";
 
-export function createChat({user, chatSnapShots}: {user: Nixix.StoreObject<User>, chatSnapShots: Nixix.StoreObject<{
+export function createChat({user, chatSnapShots}: {user: StoreObject<User>, chatSnapShots: StoreObject<{
   docs: QueryDocumentSnapshot<DocumentData>[];
 }>}) {
   
@@ -27,9 +28,9 @@ export function createChat({user, chatSnapShots}: {user: Nixix.StoreObject<User>
 
 }
 
-export function chatAlreadyExists(recEmail: string, chatSnapShots: Nixix.StoreObject<{
+export function chatAlreadyExists(recEmail: string, chatSnapShots: StoreObject<{
   docs: QueryDocumentSnapshot<DocumentData>[];
-}>, user: Nixix.StoreObject<User>): boolean {
+}>, user: StoreObject<User>): boolean {
   
   const arrayOfChats = chatSnapShots.$$__value.docs.map(doc => doc.data().users) as [string, string][];
   const value = arrayOfChats.filter((arrayofChat) => {

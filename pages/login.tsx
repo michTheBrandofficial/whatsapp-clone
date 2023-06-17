@@ -1,17 +1,16 @@
 import { signIn } from 'apis/auth';
 import logo from 'assets/images/logo.png';
 import Loader from 'components/Loader';
-import { asyncComponent } from 'nixix';
-import { Suspense } from 'nixix';
+import { asyncComponent, Suspense } from 'nixix/hoc';
 
 export default function Login() {
-  const AsyncLogin = asyncComponent<{name: string}>(function ({name}) {
+  const AsyncLogin = asyncComponent(function () {
     return new Promise((res) => {
       setTimeout(() => {
         res(
           <section className="grid place-content-center h-screen bg-gray-100 w-full">
             <div className="p-[40px] pb-[80px] flex flex-col items-center bg-white rounded-[5px] shadow-md md:p-[80px]">
-              {name}
+              
               <img
                 src={logo}
                 className="h-[200px] w-[200px] object-contain mb-3"
@@ -31,7 +30,7 @@ export default function Login() {
   return (
     <div className="w-full h-screen bg-white">
       <Suspense fallback={<Loader />}>
-        <AsyncLogin name='any'  />
+        <AsyncLogin   />
       </Suspense>
     </div>
   );

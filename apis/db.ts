@@ -1,13 +1,14 @@
 import { type User } from 'firebase/auth';
 import init from './firebase';
-import { type Query, addDoc, collection, getFirestore, getDocs, doc } from 'firebase/firestore';
+import { type Query, addDoc, collection, getFirestore, doc } from 'firebase/firestore';
+import {type StoreObject} from 'nixix/primitives'
 
 const db = getFirestore(init());
 
 export const usersDBCollection = collection(db, 'users');
 export const userDBChatCollection = collection(db, 'chats');
 
-export const createChatDB = (user: Nixix.StoreObject<User>, input: string) => {
+export const createChatDB = (user: StoreObject<User>, input: string) => {
   addDoc(userDBChatCollection, {
     users: [user.$$__value.email, input]
   })

@@ -12,6 +12,15 @@ module.exports = {
         whitesmoke: {
           DEFAULT: '#f5f5f5'
         },
+        teaGreen: {
+          DEFAULT: '#dcf8c6' 
+        },
+        pictonBlue: {
+          DEFAULT: '#34b7f1'
+        },
+        whiteChocolate: {
+          DEFAULT: '#ece5dd'
+        },
         whatsapp: {
           DEFAULT: '#e5ded3'
         }
