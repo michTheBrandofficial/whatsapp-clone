@@ -59,7 +59,7 @@ function App() {
     return userLoggedIn.value ? '/chats' : '/login';
   }
   return (
-    <Routes callback={checkUser}>
+    <Routes callback={checkUser} >
       <Route element={<Whatsapp />} />
       <Route element={<Chats user={user} />} path="/chats" />
       <Route element={<Login />} path="/login" />

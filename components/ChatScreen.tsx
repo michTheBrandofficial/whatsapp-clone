@@ -7,8 +7,8 @@ import {
   MicIcon,
   MoreVertIcon,
 } from '@assets/icons';
-import {  addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import db, {userDBChatCollection} from 'apis/db';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import db, { userDBChatCollection } from 'apis/db';
 import { getId } from 'utils/getRecEmail';
 import { setUserMessage } from 'utils/reactives';
 import { For } from 'nixix/hoc';
@@ -26,11 +26,15 @@ export default function ChatScreen() {
     msgCont.current.scrollIntoView({behavior: 'smooth', block: 'start'}) 
   }, 'once')
 
-  function sendMessage(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    // add the message to the db for the user this user is sending th message to.
-    const messagesCol = collection(db, `${userDBChatCollection.path}/${getId()}/messages`);
-    addDoc(messagesCol, userMessage.$$__value);
+  function leaveChat()  {
+    history.pushState({}, null, `/chats`);
+    setChatScreen({
+      display: 'none',
+      flexGrow: '1',
+      recEmail: 'Rec Email',
+      photoUrl: null,
+      sidebarDisplay: 'block' 
+    });
   }
 
   function changeMessage(e: ChangeEvent<HTMLInputElement>)  {
@@ -42,6 +46,13 @@ export default function ChatScreen() {
     })
   }
 
+  function sendMessage(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    // add the message to the db for the user this user is sending th message to.
+    const messagesCol = collection(db, `${userDBChatCollection.path}/${getId()}/messages`);
+    addDoc(messagesCol, userMessage.$$__value);
+  }
+
   return (
     <section
       bind:ref={refs.chatScreen}
@@ -51,27 +62,19 @@ export default function ChatScreen() {
       }}
       className="chat-screen h-full flex-grow flex flex-col justify-between"
     >
-      <header className="bg-white w-full h-[80px] flex items-center shadow-sm p-[15px]">
+      <header className="bg-white w-full h-[70px] flex items-center shadow-sm sm:px-[15px] sm:h-[80px]">
         <span
-          on:click={() => {
-            history.pushState({}, null, `/chats`);
-            setChatScreen({
-              display: 'none',
-              flexGrow: '1',
-              recEmail: 'Rec Email',
-              photoUrl: null,
-            });
-          }}
+          on:click={leaveChat}
         >
           <ChevronLeftIcon
-            size={35}
-            className=" stroke-blue-400 m-0 cursor-pointer"
+            size={0}
+            className="w-[27px] h-[27px] stroke-blue-400 m-0 cursor-pointer sm:w-[35px] sm:h-[35px]"
             stroke:width={1.5}
           />
         </span>
         {/* Recipient's user avatar */}
         <span
-          className="mr-[15px] w-[35px] h-[35px] rounded-full  cursor-pointer"
+          className="mr-[15px] rounded-full  cursor-pointer w-[27px] h-[27px] sm:w-[35px] sm:h-[35px]"
           bind:ref={refs.chatScreenUserAvatar}
         ></span>
 
@@ -86,13 +89,11 @@ export default function ChatScreen() {
         {/* Header icons */}
         <div className="flex flex-grow justify-end">
           <AttachFileIcon
-            size={35}
-            className="stroke-blue-500 m-0 cursor-pointer"
+            className="stroke-blue-500 m-0 cursor-pointer w-[27px] h-[27px] sm:w-[35px] sm:h-[35px]"
             stroke:width={2}
           />
           <MoreVertIcon
-            size={35}
-            className="stroke-blue-500  m-0 cursor-pointer"
+            className="stroke-blue-500  m-0 cursor-pointer w-[27px] h-[27px] sm:w-[35px] sm:h-[35px]"
           />
         </div>
       </header>
@@ -108,24 +109,25 @@ export default function ChatScreen() {
       </For>
 
       {/* Emoticon, input field and send button */}
-      <form className="w-full h-[20%] flex items-center  justify-between p-[15px] sm:h-[80px] bg-white">
+      <form className="w-screen h-[70px] flex items-center justify-between bg-white px-[10px] py-[15px] relative box-border sm:w-full sm:h-[80px] sm:px-[15px] ">
 
         <InsertEmoticonIcon
-          size={35}
-          className=" stroke-blue-500 m-0 cursor-pointer"
+          className=" stroke-blue-500 m-0 cursor-pointer w-[27px] h-[27px] absolute left-[22px] sm:static sm:w-[35px] sm:h-[35px]"
           stroke:width={1.5}
         />
         <input
           type="text"
-          className="flex-[1] outline-none border-none rounded-[10px] bg-whitesmoke p-[15px] pl-[20px] mx-[15px] font-bold"
+          className="flex-1 outline-none border-none rounded-full bg-gray-300 py-[10px] pl-[42px] font-bold mr-[5px] sm:mx-[15px] sm:p-[15px] sm:rounded-[10px] sm:pl-[20px]"
           on:change={changeMessage}
         />
         <button className='hidden' on:click={sendMessage} type='submit' >Send message</button>
         <MicIcon
-          size={35}
-          className=" stroke-blue-500 m-0 cursor-pointer"
+          className=" stroke-blue-500 m-0 cursor-pointer w-[27px] h-[27px] absolute right-[66px] sm:w-[35px] sm:h-[35px] sm:static"
           stroke:width={1.5}
         />
+        <div className='bg-blue-500 flex sm:hidden items-center justify-center w-[44px] h-[44px] rounded-full' >
+          <ChevronLeftIcon size={27} fill='white' className='rotate-180 cursor-pointer' />
+        </div>
       </form>
     </section>
   );

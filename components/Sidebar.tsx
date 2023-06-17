@@ -2,16 +2,16 @@ import { ChatIcon, MoreVertIcon, SearchIcon } from '@assets/icons';
 import { callCollection } from 'nixix-firebase-hooks';
 import { userDBChatCollection } from 'apis/db';
 import { signOut } from 'apis/auth';
-import { createChat } from 'utils/chats';
 import { effect, callStore } from 'nixix/primitives';
-import { For } from 'nixix/hoc'
+import { For } from 'nixix/hoc';
 import Chat from './Chat';
-import refs from 'utils/refs';
-import { chatScreen } from 'utils/reactives';
 import './Loader.css';
+import refs from 'utils/refs';
+import { createChat } from 'utils/chats';
+import { isLargeScreen } from 'utils/getRecEmail';
+import { chatScreen, setChatScreen } from 'utils/reactives';
 
 export default function Sidebar({ user }: UserProp) {
-  
   const [chatsArray, setChatsArray] = callStore([] as AllChats[]);
   const [chatSnapShots, loading] = callCollection(userDBChatCollection);
 
@@ -19,21 +19,26 @@ export default function Sidebar({ user }: UserProp) {
   effect(() => {
     if (loading.value) {
       setChatsArray(() => {
-        const allChats: AllChats[] = chatSnapShots.$$__value.docs.map((chat) => {
-          return {id: chat.id, data: chat.data() as UsersChatsType};
-        });
-  
+        const allChats: AllChats[] = chatSnapShots.$$__value.docs.map(
+          (chat) => {
+            return { id: chat.id, data: chat.data() as UsersChatsType };
+          }
+        );
+
         return allChats?.filter((chat) => {
           return chat.data.users.includes(user.$$__value.email);
         });
-
       });
     }
   });
 
   return (
     <section
-      style={{ flexGrow: chatScreen.flexGrow }}
+      style={{
+        flexGrow: chatScreen.flexGrow,
+        display: chatScreen.sidebarDisplay,
+        transition: '.2s ease',
+      }}
       className="flex flex-col"
     >
       <header className="sticky top-0 bg-white z-[1]">
@@ -48,7 +53,16 @@ export default function Sidebar({ user }: UserProp) {
           </span>
 
           {/* Chat icon and more icon */}
-          <section className="flex">
+          <section
+            className="flex"
+            on:click={() =>
+              setChatScreen({
+                display: 'flex',
+                flexGrow: '0',
+                sidebarDisplay: isLargeScreen() ? 'block' : 'none',
+              } as ChatScreenStore)
+            }
+          >
             <ChatIcon size={40} className="fill-gray-500 cursor-pointer" />
             <MoreVertIcon
               size={40}
@@ -79,16 +93,16 @@ export default function Sidebar({ user }: UserProp) {
       </header>
 
       {/* List of chats */}
-      <For parent={
-        <section
-        className="chat-container flex-grow overflow-y-scroll no-scroll"
-      ></section>
-      } each={chatsArray} fallback={''}>
-        {
-          (chat: AllChats) => {
-            return <Chat users={chat.data.users} id={chat.id} />;
-          }
+      <For
+        parent={
+          <section className="chat-container flex-grow overflow-y-scroll no-scroll"></section>
         }
+        each={chatsArray}
+        fallback={''}
+      >
+        {(chat: AllChats) => {
+          return <Chat users={chat.data.users} id={chat.id} />;
+        }}
       </For>
     </section>
   );

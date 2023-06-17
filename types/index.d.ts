@@ -31,5 +31,6 @@ declare global {
     flexGrow: '1' | '0';
     recEmail: string;
     photoUrl: string | null;
+    sidebarDisplay: 'none' | 'block'
   }
 }

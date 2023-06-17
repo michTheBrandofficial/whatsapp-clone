@@ -1,7 +1,7 @@
 import { callAuthState, callCollection } from 'nixix-firebase-hooks';
 import { UserAvatar } from '@assets/icons';
 import auth from 'apis/auth';
-import getRecEmail from 'utils/getRecEmail';
+import getRecEmail, { isLargeScreen } from 'utils/getRecEmail';
 import { effect, callRef, type MutableRefObject } from 'nixix/primitives';
 import { getDocs, query, where } from 'firebase/firestore';
 import { usersDBCollection } from 'apis/db';
@@ -79,9 +79,11 @@ export default function Chat({
       display: 'flex',
       flexGrow: '0',
       recEmail: getRecEmail(users, user),
-      photoUrl: photoUrl ? photoUrl : null
+      photoUrl: photoUrl ? photoUrl : null,
+      sidebarDisplay: !(isLargeScreen()) ? 'none' : 'block',
     });
   }
+
   return (
     <section
       className="flex w-full items-center cursor-pointer break-words p-[15px] hover:bg-gray-200"

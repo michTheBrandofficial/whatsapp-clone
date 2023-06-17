@@ -16,6 +16,7 @@ const chatScreenStore: ChatScreenStore = {
   flexGrow: '1',
   recEmail: 'Rec Email',
   photoUrl: null,
+  sidebarDisplay: 'block'
 };
 
 export const [chatScreen, setChatScreen] = callStore(chatScreenStore);
